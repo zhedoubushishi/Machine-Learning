@@ -81,7 +81,7 @@ class NaiveBayes(object):
 class GaussianNaiveBayes(NaiveBayes):
     '''
     Gaussian Naive Bayes Classifier
-    Fit with continuously features
+    Fit with continuous features
 
     Parameters
     -----------
@@ -105,7 +105,7 @@ class GaussianNaiveBayes(NaiveBayes):
             prob_of_k = self.Y_prob.get(k)
             for i in range(len(line)):
                 mean = self.condition_prob.get(k).get(i)[0]
-                two_std_square = (self.condition_prob.get(k).get(i)[1]**2)*2
+                two_std_square = (self.condition_prob.get(k).get(i)[1]**2)*2     # 2*(std^2)
                 prob_of_k *= np.exp(-(line[i] - mean)**2 / two_std_square) / np.sqrt(np.pi * two_std_square)
             prob.append(prob_of_k)
         index = prob.index(max(prob))
