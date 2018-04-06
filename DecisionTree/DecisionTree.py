@@ -19,6 +19,7 @@ class DecisionTree(object):
         self._tree = None
 
 
+    # calculate Gini coefficient
     def _cal_Gini(self, label):
         classes = np.unique(label)
         total = float(len(label))
@@ -28,6 +29,7 @@ class DecisionTree(object):
         return res
 
 
+    # split data and label into two set
     def _split_data(self, X, y, feature, value):
         X1 = X[X[:, feature] >= value]
         X2 = X[X[:, feature] < value]
@@ -36,9 +38,22 @@ class DecisionTree(object):
         return X1, X2, y1, y2
 
 
+    # vote for the max labels as label
+    def _vote(self, y):
+        res = np.unique[y]
+        sum = [len(y[y==i]) for i in res]
+        index = sum.index(max(sum))
+        return res[index]
+
+
     def _create_tree(self, X, y, indexSet):
+        # if all the labels in y are the same, return label
         if (len(np.unique(y)) == 1):
             return y[0, 0]
+
+        # if there's no feature can be split, vote for the label
+        if (len(indexSet) == 0):
+            return self._vote(y)
 
         col_index, split_value = self._choose_colIndex_and_splitValue(X, y, indexSet)
         tree = {}
@@ -46,7 +61,6 @@ class DecisionTree(object):
         tree['split_value'] = split_value
 
         indexSet.remove(col_index)
-
         X1, X2, y1, y2 = self._split_data(X, y, col_index, split_value)
 
         tree['left'] = self._create_tree(X1, y1, indexSet)
@@ -54,7 +68,7 @@ class DecisionTree(object):
         return tree
 
 
-
+    # choose feature index and the value to split feature
     def _choose_colIndex_and_splitValue(self, X, y, indexSet):
         Gini_cur = self._cal_Gini(y)
         total = len(y)
@@ -83,6 +97,7 @@ class DecisionTree(object):
         indexSet = set(i for i in range(len(X[0])))
         self._tree = self._create_tree(X, y, indexSet)
         print(self._tree)
+        self._prune()
 
 
 
@@ -96,10 +111,12 @@ class DecisionTree(object):
             return self._pred(tree['right'], line)
 
 
-
     def predict(self, data):
         labels = []
         for i in range(len(data)):
             labels.append(self._pred(self._tree, data[i, :]))
         return labels
 
+
+    def _prune(self):
+        pass
