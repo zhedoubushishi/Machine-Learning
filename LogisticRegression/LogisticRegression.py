@@ -29,8 +29,9 @@ class LogisticRegression(object):
 
     def predict(self, test):
         labels = []
+        test = np.mat(test)
         for i in range(len(test)):
-            pred_yi = self._sigmoid(test[i, :])
+            pred_yi = self._sigmoid(np.dot(self.theta, test[i, :]))
             labels.append(1 if pred_yi >= 0.5 else 0)
         return labels
 
